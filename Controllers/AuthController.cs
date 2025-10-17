@@ -12,13 +12,11 @@ namespace Ati.API.Common.Controllers
     [Route("api/[controller]")]
     public class AuthController(IConfiguration config) : ControllerBase
     {
-        private readonly IConfiguration _config = config;
-
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            var email = _config["AuthSettings:Email"];
-            var password = _config["AuthSettings:Password"];
+            var email = config["AuthSettingsEmail"];
+            var password = config["AuthSettingsPassword"];
 
             if (request.Email != email || request.Password != password)
                 return Unauthorized("Invalid credentials");
@@ -30,7 +28,7 @@ namespace Ati.API.Common.Controllers
 
         private string GenerateJwtToken(string email)
         {
-            var jwtKey = _config["AuthSettings:JwtKey"];
+            var jwtKey = config["AuthSettings:JwtKey"];
             if (string.IsNullOrEmpty(jwtKey))
             {
                 throw new InvalidOperationException("JWT key is not configured.");
@@ -45,8 +43,8 @@ namespace Ati.API.Common.Controllers
             };
 
             var token = new JwtSecurityToken(
-                issuer: _config["AuthSettings:JwtIssuer"],
-                audience: _config["AuthSettings:JwtAudience"],
+                issuer: config["AuthSettings:JwtIssuer"],
+                audience: config["AuthSettings:JwtAudience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(2),
                 signingCredentials: creds
