@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
+using Ati.API.Common.Constants;
 
 namespace Ati.API.Common.Controllers
 {
@@ -15,8 +16,8 @@ namespace Ati.API.Common.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            var email = config["AuthSettingsEmail"];
-            var password = config["AuthSettingsPassword"];
+            var email = config[EnvConstants.AuthSettingsEmail];
+            var password = config[EnvConstants.AuthSettingsPassword];
 
             if (request.Email != email || request.Password != password)
                 return Unauthorized("Invalid credentials");
@@ -28,7 +29,7 @@ namespace Ati.API.Common.Controllers
 
         private string GenerateJwtToken(string email)
         {
-            var jwtKey = config["AuthSettings:JwtKey"];
+            var jwtKey = config[EnvConstants.AuthSettingsJwtKey];
             if (string.IsNullOrEmpty(jwtKey))
             {
                 throw new InvalidOperationException("JWT key is not configured.");
@@ -43,8 +44,8 @@ namespace Ati.API.Common.Controllers
             };
 
             var token = new JwtSecurityToken(
-                issuer: config["AuthSettings:JwtIssuer"],
-                audience: config["AuthSettings:JwtAudience"],
+                issuer: config[EnvConstants.AuthSettingsJwtIssuer],
+                audience: config[EnvConstants.AuthSettingsJwtAudience],
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(2),
                 signingCredentials: creds
