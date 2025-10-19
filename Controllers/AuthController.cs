@@ -10,7 +10,7 @@ using Ati.API.Common.Constants;
 namespace Ati.API.Common.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class AuthController(IConfiguration config) : ControllerBase
     {
         [HttpPost("login")]
