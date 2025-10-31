@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Ati.API.Common.Attributes;
 using Ati.API.Common.Models.Dto;
 using Ati.API.Common.Mapping.Interfaces;
@@ -22,5 +23,13 @@ public class ProfileService(IProfileRepository repo, IProfileMapper mapper) : IP
     {
         var doc = await _repo.GetByEmailAsync(email);
         return doc is null ? null : _mapper.ToDto(doc);
+    }
+    
+    public string GetCurrentProfileId(ClaimsPrincipal user)
+    {
+        var email = user.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(email))
+            throw new InvalidOperationException("No email claim found for authenticated user.");
+        return $"profiles/{email}";
     }
 }

@@ -9,17 +9,13 @@ namespace Ati.API.Common.Controllers;
 [ApiController]
 [Authorize]
 public class ProfileController(
-    IProfileService profileService,
-    IProfileContextService profileContext) : ControllerBase
+    IProfileService profileService) : ControllerBase
 {
-    private readonly IProfileService _profileService = profileService;
-    private readonly IProfileContextService _profileContext = profileContext;
-
     [HttpGet]
     public async Task<ActionResult<ProfileDto>> Get()
     {
-        var profileId = _profileContext.GetCurrentProfileId(User);
-        var profile = await _profileService.GetCurrentProfileAsync(profileId);
+        var profileId = profileService.GetCurrentProfileId(User);
+        var profile = await profileService.GetCurrentProfileAsync(profileId);
         if (profile == null)
             return NotFound();
         return Ok(profile);

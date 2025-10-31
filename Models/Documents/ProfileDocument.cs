@@ -10,5 +10,5 @@ public class ProfileDocument : IDateTracked
     public string? Name { get; set; }
     public DateTimeOffset DateLastConnection { get; set; }
     public DateTimeOffset DateCreated { get; set; }
-    public DateTimeOffset DateModified { get; set; }
+    public DateTimeOffset? DateModified { get; set; }
 }
